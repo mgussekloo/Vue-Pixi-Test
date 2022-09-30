@@ -1,0 +1,10 @@
+{
+    "/public/static/main.js": "/public/static/main.js",
+    "/public/static/main.css": "/public/static/main.css",
+    "/public/static/generic-item.png": "/public/static/generic-item.png",
+    "/public/static/grass.png": "/public/static/grass.png",
+    "/public/static/particleball.png": "/public/static/particleball.png",
+    "/public/static/player.png": "/public/static/player.png",
+    "/public/static/tree.png": "/public/static/tree.png",
+    "/public/static/wizard.png": "/public/static/wizard.png"
+}
