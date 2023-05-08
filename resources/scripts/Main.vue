@@ -1,13 +1,16 @@
 <template>
 	<div>
-		<div id="canvas" @click="nextSlide" @touchstart="nextSlide()"></div>
+		<div id="canvas"></div>
 	</div>
 </template>
 
 <script setup>
-	import { Application, Sprite, Container } from 'pixi.js'
+	import { Application, Sprite, Container, Assets } from 'pixi.js'
 	import { Viewport } from 'pixi-viewport'
 	import { onMounted } from 'vue';
+
+	import { tileManager } from '@/helpers/tilemanager.js';
+	import { Wizard } from '@/helpers/wizard.js';
 
 	// this.$refs.canvas.addEventListener('mousedown', this.clickCanvas, false);
 	// this.$refs.canvas.addEventListener('touchstart', this.clickCanvas, false);
@@ -19,23 +22,15 @@
 	    height: window.innerHeight
 	});
 
-	// create viewport
 	const viewport = new Viewport({
 	    screenWidth: window.innerWidth,
 	    screenHeight: window.innerHeight,
 	    worldWidth: 100 * 48,
 	    worldHeight: 100 * 48,
 
-	    interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
+		events: app.renderer.events
 	})
 
-
-	// const container = new Container();
-	// container.x = 200;
-	// container.y = 0;
-	app.stage.addChild(viewport);
-
-	// activate plugins
 	viewport
     .drag()
     // .clamp({ direction: 'all' })
@@ -44,12 +39,16 @@
     .decelerate();
 
     viewport.scaled = 0.5;
+
+    // viewport.scale.set(0.5);
+
 	// const sprite = Sprite.from("static/player.png");
 	// sprite.position.set(100, 100);
 	// viewport.addChild(sprite);
 
 	// grass
 	const grassContainer = new Container();
+	viewport.addChild(grassContainer);
 
 	let sprite;
 	for (let x=0;x<99;x++) {
@@ -60,8 +59,33 @@
 		}
 	}
 
-	viewport.addChild(grassContainer);
+	const entityContainer = new Container();
+	viewport.addChild(entityContainer);
+
+	tileManager.init();
+	tileManager.setContainer(entityContainer);
+
+	const wizard = new Wizard();
+	tileManager.addEntity(wizard, { x: 0, y: 0});
+
+	// Assets.load('static/tickerbit/Tickerbit.fnt').then(() => {
+    // 	alert('asd');
+    // 	// const bitmapFontText = new PIXI.BitmapText('bitmap fonts are supported!\nWoo yay!', { font: 'Tickerbit', align: 'left' });
+
+	//     // bitmapFontText.x = 50;
+	//     // bitmapFontText.y = 200;
+
+	//     // grassContainer.addChild(bitmapFontText);
+    // });
+
+	app.stage.addChild(viewport);
+
+
 	onMounted(() => {
 		document.getElementById('canvas').appendChild(app.view);
 	});
+
+
+
+
 </script>

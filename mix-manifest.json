@@ -5,6 +5,8 @@
     "/public/static/grass.png": "/public/static/grass.png",
     "/public/static/particleball.png": "/public/static/particleball.png",
     "/public/static/player.png": "/public/static/player.png",
+    "/public/static/tickerbit/Tickerbit.fnt": "/public/static/tickerbit/Tickerbit.fnt",
+    "/public/static/tickerbit/Tickerbit.png": "/public/static/tickerbit/Tickerbit.png",
     "/public/static/tree.png": "/public/static/tree.png",
     "/public/static/wizard.png": "/public/static/wizard.png"
 }
