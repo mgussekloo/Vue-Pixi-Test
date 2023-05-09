@@ -5,7 +5,7 @@ class Wizard extends Entity {
     constructor() {
     	super();
     	const wizardSprite = Sprite.from("static/wizard.png");
- 		this.setSprite(wizardSprite);
+ 		this.sprite = wizardSprite;
     }
 }
 

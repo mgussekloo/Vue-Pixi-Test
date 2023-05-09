@@ -17663,7 +17663,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/index.mjs");
 /* harmony import */ var pixi_viewport__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! pixi-viewport */ "./node_modules/pixi-viewport/dist/pixi_viewport.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-/* harmony import */ var _helpers_tilemanager_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/helpers/tilemanager.js */ "./resources/scripts/helpers/tilemanager.js");
+/* harmony import */ var _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/helpers/entityManager.js */ "./resources/scripts/helpers/entityManager.js");
 /* harmony import */ var _helpers_wizard_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/helpers/wizard.js */ "./resources/scripts/helpers/wizard.js");
 
 
@@ -17718,25 +17718,17 @@ __webpack_require__.r(__webpack_exports__);
     }
     var entityContainer = new pixi_js__WEBPACK_IMPORTED_MODULE_0__.Container();
     viewport.addChild(entityContainer);
-    _helpers_tilemanager_js__WEBPACK_IMPORTED_MODULE_3__.tileManager.init();
-    _helpers_tilemanager_js__WEBPACK_IMPORTED_MODULE_3__.tileManager.setContainer(entityContainer);
+    _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.init();
+    _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.container = entityContainer;
     var wizard = new _helpers_wizard_js__WEBPACK_IMPORTED_MODULE_4__.Wizard();
-    _helpers_tilemanager_js__WEBPACK_IMPORTED_MODULE_3__.tileManager.addEntity(wizard, {
+    _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.addEntity(wizard, {
       x: 0,
       y: 0
     });
-
-    // Assets.load('static/tickerbit/Tickerbit.fnt').then(() => {
-    // 	alert('asd');
-    // 	// const bitmapFontText = new PIXI.BitmapText('bitmap fonts are supported!\nWoo yay!', { font: 'Tickerbit', align: 'left' });
-
-    //     // bitmapFontText.x = 50;
-    //     // bitmapFontText.y = 200;
-
-    //     // grassContainer.addChild(bitmapFontText);
-    // });
-
     app.stage.addChild(viewport);
+    app.ticker.add(function () {
+      _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.tick();
+    });
     (0,vue__WEBPACK_IMPORTED_MODULE_2__.onMounted)(function () {
       document.getElementById('canvas').appendChild(app.view);
     });
@@ -17768,8 +17760,8 @@ __webpack_require__.r(__webpack_exports__);
         return pixi_viewport__WEBPACK_IMPORTED_MODULE_1__.Viewport;
       },
       onMounted: vue__WEBPACK_IMPORTED_MODULE_2__.onMounted,
-      get tileManager() {
-        return _helpers_tilemanager_js__WEBPACK_IMPORTED_MODULE_3__.tileManager;
+      get entityManager() {
+        return _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager;
       },
       get Wizard() {
         return _helpers_wizard_js__WEBPACK_IMPORTED_MODULE_4__.Wizard;
@@ -17833,28 +17825,24 @@ var Entity = /*#__PURE__*/function () {
   function Entity() {
     _classCallCheck(this, Entity);
     _defineProperty(this, "id", -1);
-    _defineProperty(this, "tile", null);
+    _defineProperty(this, "_tile", null);
     _defineProperty(this, "sprite", null);
     this.id = lodash_uniqueId__WEBPACK_IMPORTED_MODULE_0___default()();
   }
   _createClass(Entity, [{
-    key: "setSprite",
-    value: function setSprite(sprite) {
-      this.sprite = sprite;
-    }
-  }, {
-    key: "setTile",
-    value: function setTile(tile) {
-      this.tile = tile;
+    key: "tile",
+    get: function get() {
+      return this._tile;
+    },
+    set: function set(tile) {
+      this._tile = tile;
       if (this.sprite) {
         this.sprite.position.set(48 * tile.x, 48 * tile.y);
       }
     }
   }, {
-    key: "getTile",
-    value: function getTile() {
-      return this.tile;
-    }
+    key: "tick",
+    value: function tick() {}
   }]);
   return Entity;
 }();
@@ -17862,21 +17850,28 @@ var Entity = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./resources/scripts/helpers/tilemanager.js":
-/*!**************************************************!*\
-  !*** ./resources/scripts/helpers/tilemanager.js ***!
-  \**************************************************/
+/***/ "./resources/scripts/helpers/entityManager.js":
+/*!****************************************************!*\
+  !*** ./resources/scripts/helpers/entityManager.js ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "tileManager": () => (/* binding */ tileManager)
+/* harmony export */   "entityManager": () => (/* binding */ entityManager)
 /* harmony export */ });
 /* harmony import */ var _helpers_vector2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/helpers/vector2 */ "./resources/scripts/helpers/vector2.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 function range(start, end) {
   var arr = [];
@@ -17885,11 +17880,16 @@ function range(start, end) {
   }
   return arr;
 }
-var TileManager = function TileManager() {
-  return {
-    occupied_cells: [],
-    container: false,
-    init: function init() {
+var EntityManager = /*#__PURE__*/function () {
+  function EntityManager() {
+    _classCallCheck(this, EntityManager);
+    _defineProperty(this, "entities", []);
+    _defineProperty(this, "occupied_cells", []);
+    _defineProperty(this, "container", false);
+  }
+  _createClass(EntityManager, [{
+    key: "init",
+    value: function init() {
       var _iterator = _createForOfIteratorHelper(range(0, 29)),
         _step;
       try {
@@ -17902,7 +17902,7 @@ var TileManager = function TileManager() {
               var y = _step2.value;
               var tile = new _helpers_vector2__WEBPACK_IMPORTED_MODULE_0__.Vector2(x, y);
               // console.log(tile);
-              this.occupied_cells[tile.compact()] = [];
+              this.occupied_cells[tile.x_y] = [];
             }
           } catch (err) {
             _iterator2.e(err);
@@ -17915,37 +17915,59 @@ var TileManager = function TileManager() {
       } finally {
         _iterator.f();
       }
-    },
-    setContainer: function setContainer(container) {
-      this.container = container;
-    },
-    getEntitiesAtTile: function getEntitiesAtTile(tile) {
-      if (this.occupied_cells[tile.compact()]) {
-        return this.occupied_cells[tile.compact()];
+    }
+  }, {
+    key: "tick",
+    value: function tick() {
+      this.entities.forEach(function (entity) {
+        entity.tick();
+      });
+    }
+  }, {
+    key: "getEntitiesAtTile",
+    value: function getEntitiesAtTile(tile) {
+      if (this.occupied_cells[tile.x_y]) {
+        return this.occupied_cells[tile.x_y];
       }
       return [];
-    },
-    addEntity: function addEntity(entity, position) {
-      var tile = new _helpers_vector2__WEBPACK_IMPORTED_MODULE_0__.Vector2(position.x, position.y);
-      entity.setTile(tile);
+    }
+  }, {
+    key: "addEntity",
+    value: function addEntity(entity, position) {
+      this.entities.push(entity);
+
+      // const tile = new Vector2(position.x, position.y);
+      // entity.setTile(tile);
+
       if (this.container && entity.sprite) {
         this.container.addChild(entity.sprite);
       }
-      this.occupied_cells[tile.compact()].push(entity);
-    },
-    removeEntity: function removeEntity(entity) {
+
+      // this.occupied_cells[tile.x_y].push(entity);
+    }
+  }, {
+    key: "removeEntity",
+    value: function removeEntity(entity) {
       // if (this.container && entity.sprite) {
       // 	this
       // }
 
       // this.occupied_cells[] = [];
-    },
-    blockTile: function blockTile(tile) {},
-    freeTile: function freeTile(tile) {},
-    getFreeTile: function getFreeTile() {
+    }
+  }, {
+    key: "blockTile",
+    value: function blockTile(tile) {}
+  }, {
+    key: "freeTile",
+    value: function freeTile(tile) {}
+  }, {
+    key: "getFreeTile",
+    value: function getFreeTile() {
       return getFreeTileInRange((0,_helpers_vector2__WEBPACK_IMPORTED_MODULE_0__.Vector2)(0, 0), (0,_helpers_vector2__WEBPACK_IMPORTED_MODULE_0__.Vector2)(30, 45));
-    },
-    getFreeTileInRange: function getFreeTileInRange(rangeStart, rangeEnd) {
+    }
+  }, {
+    key: "getFreeTileInRange",
+    value: function getFreeTileInRange(rangeStart, rangeEnd) {
       // var freeTiles = []
       // for i in occupied_cells:
       // 	if i.x >= rangeStart.x and i.y >= rangeStart.y and i.x <= rangeEnd.x and i.y <= rangeEnd.y:
@@ -17953,11 +17975,12 @@ var TileManager = function TileManager() {
       // 			freeTiles.append(i)
 
       // return freeTiles[randi() % freeTiles.size()]
-      // 	},
+      // 	}
     }
-  };
-};
-var tileManager = new TileManager();
+  }]);
+  return EntityManager;
+}();
+var entityManager = new EntityManager();
 
 
 /***/ }),
@@ -17996,8 +18019,8 @@ var Vector2 = /*#__PURE__*/function (_Vector) {
     return _super.apply(this, arguments);
   }
   _createClass(Vector2, [{
-    key: "compact",
-    value: function compact() {
+    key: "x_y",
+    get: function get() {
       return this.x + '_' + this.y;
     }
   }]);
@@ -18043,7 +18066,7 @@ var Wizard = /*#__PURE__*/function (_Entity) {
     _classCallCheck(this, Wizard);
     _this = _super.call(this);
     var wizardSprite = pixi_js__WEBPACK_IMPORTED_MODULE_1__.Sprite.from("static/wizard.png");
-    _this.setSprite(wizardSprite);
+    _this.sprite = wizardSprite;
     return _this;
   }
   return _createClass(Wizard);

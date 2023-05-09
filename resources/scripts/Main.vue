@@ -9,7 +9,7 @@
 	import { Viewport } from 'pixi-viewport'
 	import { onMounted } from 'vue';
 
-	import { tileManager } from '@/helpers/tilemanager.js';
+	import { entityManager } from '@/helpers/entityManager.js';
 	import { Wizard } from '@/helpers/wizard.js';
 
 	// this.$refs.canvas.addEventListener('mousedown', this.clickCanvas, false);
@@ -62,24 +62,17 @@
 	const entityContainer = new Container();
 	viewport.addChild(entityContainer);
 
-	tileManager.init();
-	tileManager.setContainer(entityContainer);
+	entityManager.init();
+	entityManager.container = entityContainer;
 
 	const wizard = new Wizard();
-	tileManager.addEntity(wizard, { x: 0, y: 0});
-
-	// Assets.load('static/tickerbit/Tickerbit.fnt').then(() => {
-    // 	alert('asd');
-    // 	// const bitmapFontText = new PIXI.BitmapText('bitmap fonts are supported!\nWoo yay!', { font: 'Tickerbit', align: 'left' });
-
-	//     // bitmapFontText.x = 50;
-	//     // bitmapFontText.y = 200;
-
-	//     // grassContainer.addChild(bitmapFontText);
-    // });
+	entityManager.addEntity(wizard, { x: 0, y: 0});
 
 	app.stage.addChild(viewport);
 
+	app.ticker.add(() => {
+		entityManager.tick();
+	})
 
 	onMounted(() => {
 		document.getElementById('canvas').appendChild(app.view);
