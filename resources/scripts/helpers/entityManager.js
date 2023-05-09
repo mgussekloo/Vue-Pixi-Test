@@ -65,19 +65,24 @@ class EntityManager {
 	}
 
 
-	getFreeTile() {
-		return getFreeTileInRange(Vector2(0,0), Vector2(30, 45))
+	get emptyTile() {
+		return this.getEmptyTileInRange(new Vector2(0,0), new Vector2(30, 45));
 	}
 
-	getFreeTileInRange(rangeStart, rangeEnd) {
-		// var freeTiles = []
-		// for i in occupied_cells:
-		// 	if i.x >= rangeStart.x and i.y >= rangeStart.y and i.x <= rangeEnd.x and i.y <= rangeEnd.y:
-		// 		if occupied_cells[i] == null:
-		// 			freeTiles.append(i)
+	getEmptyTileInRange(rangeStart, rangeEnd) {
+		let freeTiles = [];
 
-		// return freeTiles[randi() % freeTiles.size()]
-		// 	}
+		for (let x_y in this.occupied_cells) {
+			if (this.occupied_cells[x_y].length == 0) {
+				freeTiles.push(x_y);
+			}
+		};
+
+		let x_y = freeTiles[Math.floor(Math.random()*freeTiles.length)];
+
+		let [x, y] = x_y.split('_').map(Math.trunc);
+
+		return new Vector2(x, y);
 	}
 }
 
