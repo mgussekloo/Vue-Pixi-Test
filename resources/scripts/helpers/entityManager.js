@@ -42,7 +42,9 @@ class EntityManager {
 		// const tile = new Vector2(position.x, position.y);
 		// entity.setTile(tile);
 
+
 		if (this.container && entity.sprite) {
+			entity.sprite.position.set(position.x, position.y);
 			this.container.addChild(entity.sprite);
 		}
 
