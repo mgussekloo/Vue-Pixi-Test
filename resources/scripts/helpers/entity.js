@@ -1,16 +1,18 @@
 import uniqueId from 'lodash/uniqueId';
+import { pixelsToTile, tileToPixels } from '@/helpers/utils.js';
 
 class Entity {
 	id = -1;
-	_tile = null;
+	// _tile = null;
     sprite = null;
+    _state = null;
 
     constructor() {
     	this.id = uniqueId();
     }
 
 	set tile(tile) {
-		this._tile = tile;
+		// this._tile = tile;
 
 		if (this.sprite) {
 			this.sprite.position.set(48 * (tile.x), 48 * (tile.y));
@@ -18,7 +20,21 @@ class Entity {
 	}
 
 	get tile() {
-		return this._tile;
+		return pixelsToTile(this.sprite.position);
+	}
+
+	set state(state) {
+		let oldState = this._state;
+		this._state = state;
+		this.onChangeState(state,oldState);
+	}
+
+	get state() {
+		return this._state;
+	}
+
+	onChangeState(newState, oldState) {
+
 	}
 
 	tick() {

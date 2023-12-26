@@ -1,3 +1,4 @@
+import { pixelsToTile, tileToPixels } from '@/helpers/utils.js';
 import { Vector2 } from '@/helpers/vector2';
 
 function range(start, end) {
@@ -10,23 +11,24 @@ function range(start, end) {
 
 class EntityManager {
 	entities = [];
-	occupied_cells = [];
+	// occupied_cells = [];
 	container = false;
 
+	tile_min = { x: 0, y: 0 };
+	tile_max = { x: 29, y: 44 };
+
     init() {
-    	for (let x of range(0, 29)) {
-    		for (let y of range(0, 44)) {
-				const tile = new Vector2(x, y);
-				// console.log(tile);
-				this.occupied_cells[tile.x_y] = [];
-    		}
-    	}
+    	// for (let x of range(0, 29)) {
+    	// 	for (let y of range(0, 44)) {
+		// 		const tile = new Vector2(x, y);
+		// 		// console.log(tile);
+		// 		this.occupied_cells[tile.x_y] = [];
+    	// 	}
+    	// }
     }
 
     tick() {
-    	this.entities.forEach((entity) => {
-				entity.tick();
-		});
+    	this.entities.forEach((entity) => entity.tick());
     }
 
 	getEntitiesAtTile(tile) {
@@ -39,12 +41,10 @@ class EntityManager {
 	addEntity(entity, position) {
 		this.entities.push(entity);
 
-		// const tile = new Vector2(position.x, position.y);
-		// entity.setTile(tile);
-
-
 		if (this.container && entity.sprite) {
-			entity.sprite.position.set(position.x, position.y);
+			let tile = pixelsToTile(position);
+			entity.tile = tile;
+
 			this.container.addChild(entity.sprite);
 		}
 
@@ -68,23 +68,46 @@ class EntityManager {
 
 
 	get emptyTile() {
-		return this.getEmptyTileInRange(new Vector2(0,0), new Vector2(30, 45));
+		return this.emptyTileInRange(0, 0, 30, 45);
 	}
 
-	getEmptyTileInRange(rangeStart, rangeEnd) {
+	emptyTileInArr(arr) {
+		let occupiedTiles = [];
+		this.entities.forEach((entity) => {
+			occupiedTiles.push(entity.tile.x_y);
+		});
+
 		let freeTiles = [];
+		arr.forEach((item) => {
+			let x = item[0], y = item[1];
+			let tile = new Vector2(x, y);
 
-		for (let x_y in this.occupied_cells) {
-			if (this.occupied_cells[x_y].length == 0) {
-				freeTiles.push(x_y);
+			if (
+				!occupiedTiles.includes(tile.x_y)
+				&& x >= this.tile_min.x
+				&& y >= this.tile_min.y
+				&& x <= this.tile_max.x
+				&& y <= this.tile_max.y
+			) {
+				freeTiles.push(tile);
 			}
-		};
+		});
 
-		let x_y = freeTiles[Math.floor(Math.random()*freeTiles.length)];
+		if (freeTiles.length) {
+	    	return freeTiles[Math.floor(Math.random()*freeTiles.length)];
+		}
 
-		let [x, y] = x_y.split('_').map(Math.trunc);
+		return false;
+	}
 
-		return new Vector2(x, y);
+	emptyTileInRange(x1, y1, x2, y2) {
+		let arr = [];
+		for (let x of range(x1, x2)) {
+    		for (let y of range(y1, y2)) {
+				arr.push([x, y]);
+			}
+		}
+		return this.emptyTileInArr(arr);
 	}
 }
 
