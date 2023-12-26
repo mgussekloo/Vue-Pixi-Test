@@ -1,24 +1,31 @@
-import { Entity } from '@/helpers/entity.js';
 import { Sprite } from 'pixi.js'
 import { entityManager } from '@/helpers/entityManager.js';
+import { Entity } from '@/helpers/entity.js';
+import { Emitter } from '@/helpers/emitter.js';
 import { pixelsToTile, tileToPixels } from '@/helpers/utils.js';
+
+import { dustTrailParticlesConfig } from '@/configs/dustTrailParticles.js';
 
 import TWEEN from '@tweenjs/tween.js'
 
 class Wizard extends Entity {
     constructor() {
     	super();
+
     	const wizardSprite = Sprite.from("static/wizard.png");
  		this.sprite = wizardSprite;
+
+		this.emitter = new Emitter(this, dustTrailParticlesConfig);
+
  		this.state = 'idle';
     }
 
     tick() {
     	super.tick();
+    	this.emitter.update();
+    	// if (this.state == 'moving') {
 
-    	if (this.state == 'moving') {
-			TWEEN.update();
-		}
+		// }
     }
 
 	onChangeState(newState) {
@@ -45,7 +52,6 @@ class Wizard extends Entity {
     	if (emptyTile === false) {
     		this.state = 'idle';
     	}
-		this.state = 'moving';
 
 		let emptyPosition = tileToPixels(emptyTile);
 		let position = this.sprite.position;
@@ -57,13 +63,15 @@ class Wizard extends Entity {
 
 		let tween = new TWEEN.Tween(source).to(destination, 200)
 		.onStart((target) => {
-
+			this.state = 'moving';
+			this.emitter.start();
 		})
 		.onUpdate((target, elapsed) => {
 			this.sprite.position.set(target.x, target.y);
 		})
 		.onComplete((target, tween) => {
 			this.state = 'idle';
+			this.emitter.stop()
 		})
 		.start();
     }

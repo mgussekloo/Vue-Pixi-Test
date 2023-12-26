@@ -3,8 +3,9 @@ import { pixelsToTile, tileToPixels } from '@/helpers/utils.js';
 
 class Entity {
 	id = -1;
-	// _tile = null;
     sprite = null;
+
+    _entityManager = null;
     _state = null;
 
     constructor() {
@@ -31,6 +32,17 @@ class Entity {
 
 	get state() {
 		return this._state;
+	}
+
+	set entityManager(entityManager) {
+		this._entityManager = entityManager;
+		if (entityManager.container && this.sprite) {
+			entityManager.container.addChild(this.sprite);
+		}
+	}
+
+	get entityManager() {
+		return this._entityManager;
 	}
 
 	onChangeState(newState, oldState) {

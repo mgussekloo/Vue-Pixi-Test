@@ -40,15 +40,7 @@ class EntityManager {
 
 	addEntity(entity, position) {
 		this.entities.push(entity);
-
-		if (this.container && entity.sprite) {
-			let tile = pixelsToTile(position);
-			entity.tile = tile;
-
-			this.container.addChild(entity.sprite);
-		}
-
-		// this.occupied_cells[tile.x_y].push(entity);
+		entity.entityManager = this;
 	}
 
 	removeEntity(entity) {

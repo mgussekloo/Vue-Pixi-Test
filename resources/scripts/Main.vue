@@ -11,6 +11,7 @@
 
 	import { entityManager } from '@/helpers/entityManager.js';
 	import { Wizard } from '@/helpers/wizard.js';
+	import TWEEN from '@tweenjs/tween.js'
 
 	// this.$refs.canvas.addEventListener('mousedown', this.clickCanvas, false);
 	// this.$refs.canvas.addEventListener('touchstart', this.clickCanvas, false);
@@ -71,6 +72,7 @@
 	app.stage.addChild(viewport);
 
 	app.ticker.add(() => {
+		TWEEN.update();
 		entityManager.tick();
 	})
 
