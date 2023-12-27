@@ -9,7 +9,7 @@ let dustTrailParticlesConfig =
     "frequency": 0.3,
     "emitterLifetime": -1,
     "maxParticles": 25,
-    "addAtBack": true,
+    "addAtBack": false,
     "pos": {
         "x": 0,
         "y": 0

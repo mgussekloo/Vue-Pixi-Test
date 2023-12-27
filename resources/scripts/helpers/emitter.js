@@ -39,7 +39,10 @@ class Emitter {
 
 	updateOwnerPos() {
 		if (this.entity && this.entity.sprite && this.emitter) {
-			this.emitter.updateOwnerPos(this.entity.sprite.position.x + 24, this.entity.sprite.position.y + 48);
+			this.emitter.updateOwnerPos(
+				this.entity.sprite.position.x + 24,
+				this.entity.sprite.position.y + 55
+			);
 		}
 	}
 }

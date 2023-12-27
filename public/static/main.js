@@ -21368,7 +21368,7 @@ var dustTrailParticlesConfig = {
   "frequency": 0.3,
   "emitterLifetime": -1,
   "maxParticles": 25,
-  "addAtBack": true,
+  "addAtBack": false,
   "pos": {
     "x": 0,
     "y": 0
@@ -21514,7 +21514,7 @@ var Emitter = /*#__PURE__*/function () {
     key: "updateOwnerPos",
     value: function updateOwnerPos() {
       if (this.entity && this.entity.sprite && this.emitter) {
-        this.emitter.updateOwnerPos(this.entity.sprite.position.x + 24, this.entity.sprite.position.y + 48);
+        this.emitter.updateOwnerPos(this.entity.sprite.position.x + 24, this.entity.sprite.position.y + 55);
       }
     }
   }]);
@@ -21769,6 +21769,7 @@ var entityManager = new EntityManager();
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "distanceBetween": () => (/* binding */ distanceBetween),
 /* harmony export */   "pixelsToTile": () => (/* binding */ pixelsToTile),
 /* harmony export */   "tileToPixels": () => (/* binding */ tileToPixels)
 /* harmony export */ });
@@ -21779,6 +21780,12 @@ function tileToPixels(v) {
 }
 function pixelsToTile(v) {
   return new _helpers_vector2__WEBPACK_IMPORTED_MODULE_0__.Vector2(Math.floor(v.x / 48), Math.floor(v.y / 48));
+}
+function distanceBetween(x1, y1, x2, y2) {
+  var a = x1 - x2;
+  var b = y1 - y2;
+  var c = Math.sqrt(a * a + b * b);
+  return c;
 }
 
 
@@ -21851,8 +21858,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
@@ -21862,6 +21867,9 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
 
@@ -21876,10 +21884,13 @@ var Wizard = /*#__PURE__*/function (_Entity) {
     var _this;
     _classCallCheck(this, Wizard);
     _this = _super.call(this);
+    _defineProperty(_assertThisInitialized(_this), "lastTime", 0);
+    _defineProperty(_assertThisInitialized(_this), "target", null);
     var wizardSprite = pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite.from("static/wizard.png");
     _this.sprite = wizardSprite;
     _this.emitter = new _helpers_emitter_js__WEBPACK_IMPORTED_MODULE_3__.Emitter(_assertThisInitialized(_this), _configs_dustTrailParticles_js__WEBPACK_IMPORTED_MODULE_5__.dustTrailParticlesConfig);
     _this.state = 'idle';
+    _this.lastTime = Date.now();
     return _this;
   }
   _createClass(Wizard, [{
@@ -21887,6 +21898,7 @@ var Wizard = /*#__PURE__*/function (_Entity) {
     value: function tick() {
       _get(_getPrototypeOf(Wizard.prototype), "tick", this).call(this);
       this.emitter.update();
+      this.updateMove();
       // if (this.state == 'moving') {
 
       // }
@@ -21906,9 +21918,49 @@ var Wizard = /*#__PURE__*/function (_Entity) {
       }
     }
   }, {
+    key: "updateMove",
+    value: function updateMove() {
+      if (!this.target) {
+        return;
+      }
+      var delta = Date.now() - this.lastTime;
+      this.lastTime = Date.now();
+      var speed = delta * 0.05;
+      var currentX = this.sprite.position.x;
+      var currentY = this.sprite.position.y;
+      var targetX = this.target.x;
+      var targetY = this.target.y;
+      var diffX = currentX - targetX;
+      var diffY = currentY - targetY;
+      var distance = (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_4__.distanceBetween)(currentX, currentY, targetX, targetY);
+      console.log('dist', distance);
+
+      // if (distance < 1) {
+      // 	speed = speed / (1 - distance);
+      // }
+
+      if (distance < 0.5) {
+        console.log('found');
+        this.sprite.position.set(this.target.x, this.target.y);
+        this.target = null;
+        this.state = 'idle';
+        this.emitter.stop();
+        return;
+      }
+      var changeX = 0,
+        changeY = 0;
+      if (Math.abs(diffX) > 0) {
+        changeX = diffX < 0 ? speed : -1 * speed;
+      }
+      if (Math.abs(diffY) > 0) {
+        changeY = diffY < 0 ? speed : -1 * speed;
+      }
+      console.log(changeX, changeY);
+      this.sprite.position.set(currentX + changeX, currentY + changeY);
+    }
+  }, {
     key: "move",
     value: function move() {
-      var _this3 = this;
       // look around
       var arr = [[this.tile.x - 1, this.tile.y], [this.tile.x + 1, this.tile.y], [this.tile.x, this.tile.y - 1], [this.tile.x, this.tile.y + 1]];
       var emptyTile = _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_1__.entityManager.emptyTileInArr(arr);
@@ -21926,15 +21978,24 @@ var Wizard = /*#__PURE__*/function (_Entity) {
         y: emptyPosition.y
       };
       var distance = parseInt(emptyPosition.distanceTo(position));
-      var tween = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"].Tween(source).to(destination, 200).onStart(function (target) {
-        _this3.state = 'moving';
-        _this3.emitter.start();
-      }).onUpdate(function (target, elapsed) {
-        _this3.sprite.position.set(target.x, target.y);
-      }).onComplete(function (target, tween) {
-        _this3.state = 'idle';
-        _this3.emitter.stop();
-      }).start();
+      this.target = destination;
+      this.lastTime = Date.now();
+      this.state = 'moving';
+      this.emitter.start();
+
+      // let tween = new TWEEN.Tween(source).to(destination, 200)
+      // .onStart((target) => {
+      // 	this.state = 'moving';
+      // 	this.emitter.start();
+      // })
+      // .onUpdate((target, elapsed) => {
+      // 	this.sprite.position.set(target.x, target.y);
+      // })
+      // .onComplete((target, tween) => {
+      // 	this.state = 'idle';
+      // 	this.emitter.stop()
+      // })
+      // .start();
     }
   }]);
   return Wizard;
