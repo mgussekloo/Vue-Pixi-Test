@@ -12,11 +12,11 @@ class Entity {
     	this.id = uniqueId();
     }
 
-    set pixels(pixels) {
-		if (this.sprite) {
-			this.sprite.position.set(pixels.x, pixels.y);
-		}
-    }
+    // set pixels(pixels) {
+	// 	if (this.sprite) {
+	// 		this.sprite.position.set(pixels.x, pixels.y);
+	// 	}
+    // }
 
 	set tile(tile) {
 		if (this.sprite) {

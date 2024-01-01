@@ -21584,14 +21584,13 @@ var Entity = /*#__PURE__*/function () {
     _defineProperty(this, "_state", null);
     this.id = lodash_uniqueId__WEBPACK_IMPORTED_MODULE_0___default()();
   }
+
+  // set pixels(pixels) {
+  // 	if (this.sprite) {
+  // 		this.sprite.position.set(pixels.x, pixels.y);
+  // 	}
+  // }
   _createClass(Entity, [{
-    key: "pixels",
-    set: function set(pixels) {
-      if (this.sprite) {
-        this.sprite.position.set(pixels.x, pixels.y);
-      }
-    }
-  }, {
     key: "tile",
     get: function get() {
       return (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_1__.pixelsToTile)(this.sprite.position);
@@ -21860,6 +21859,7 @@ var Tree = /*#__PURE__*/function (_Entity) {
     _this = _super.call(this);
     var sprite = pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite.from("static/tree.png");
     _this.sprite = sprite;
+    _this.sprite.anchor.set(1, 0.5);
 
     // this.emitter = new Emitter(this, dustTrailParticlesConfig);
 

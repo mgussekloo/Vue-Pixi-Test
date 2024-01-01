@@ -14,6 +14,7 @@ class Tree extends Entity {
 
     	const sprite = Sprite.from("static/tree.png");
  		this.sprite = sprite;
+ 		this.sprite.anchor.set(1, 0.5);
 
 		// this.emitter = new Emitter(this, dustTrailParticlesConfig);
 
