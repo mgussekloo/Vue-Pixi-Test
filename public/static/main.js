@@ -21206,7 +21206,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 /* harmony import */ var _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/helpers/entityManager.js */ "./resources/scripts/helpers/entityManager.js");
 /* harmony import */ var _helpers_wizard_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/helpers/wizard.js */ "./resources/scripts/helpers/wizard.js");
-/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+/* harmony import */ var _helpers_tree_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/helpers/tree.js */ "./resources/scripts/helpers/tree.js");
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+
 
 
 
@@ -21268,9 +21273,23 @@ __webpack_require__.r(__webpack_exports__);
       x: 0,
       y: 0
     });
+    var emptyTiles = _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.emptyTiles(99);
+    var _iterator = _createForOfIteratorHelper(emptyTiles),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var tile = _step.value;
+        var tree = new _helpers_tree_js__WEBPACK_IMPORTED_MODULE_5__.Tree();
+        _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.addEntity(tree, tile);
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
     app.stage.addChild(viewport);
     app.ticker.add(function () {
-      _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_5__["default"].update();
+      _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"].update();
       _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.tick();
     });
     (0,vue__WEBPACK_IMPORTED_MODULE_2__.onMounted)(function () {
@@ -21288,6 +21307,12 @@ __webpack_require__.r(__webpack_exports__);
       },
       entityContainer: entityContainer,
       wizard: wizard,
+      get emptyTiles() {
+        return emptyTiles;
+      },
+      set emptyTiles(v) {
+        emptyTiles = v;
+      },
       get Application() {
         return pixi_js__WEBPACK_IMPORTED_MODULE_0__.Application;
       },
@@ -21310,8 +21335,11 @@ __webpack_require__.r(__webpack_exports__);
       get Wizard() {
         return _helpers_wizard_js__WEBPACK_IMPORTED_MODULE_4__.Wizard;
       },
+      get Tree() {
+        return _helpers_tree_js__WEBPACK_IMPORTED_MODULE_5__.Tree;
+      },
       get TWEEN() {
-        return _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_5__["default"];
+        return _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"];
       }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
@@ -21557,15 +21585,21 @@ var Entity = /*#__PURE__*/function () {
     this.id = lodash_uniqueId__WEBPACK_IMPORTED_MODULE_0___default()();
   }
   _createClass(Entity, [{
+    key: "pixels",
+    set: function set(pixels) {
+      if (this.sprite) {
+        this.sprite.position.set(pixels.x, pixels.y);
+      }
+    }
+  }, {
     key: "tile",
     get: function get() {
       return (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_1__.pixelsToTile)(this.sprite.position);
     },
     set: function set(tile) {
-      // this._tile = tile;
-
       if (this.sprite) {
-        this.sprite.position.set(48 * tile.x, 48 * tile.y);
+        var pixels = (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_1__.tileToPixels)(tile);
+        this.sprite.position.set(pixels.x, pixels.y);
       }
     }
   }, {
@@ -21627,13 +21661,6 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _ty
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
-function range(start, end) {
-  var arr = [];
-  for (var i = start; i <= end; i++) {
-    arr.push(i);
-  }
-  return arr;
-}
 var EntityManager = /*#__PURE__*/function () {
   function EntityManager() {
     _classCallCheck(this, EntityManager);
@@ -21679,6 +21706,7 @@ var EntityManager = /*#__PURE__*/function () {
     key: "addEntity",
     value: function addEntity(entity, position) {
       this.entities.push(entity);
+      entity.tile = position;
       entity.entityManager = this;
     }
   }, {
@@ -21702,13 +21730,22 @@ var EntityManager = /*#__PURE__*/function () {
       return this.emptyTileInRange(0, 0, 30, 45);
     }
   }, {
-    key: "emptyTileInArr",
-    value: function emptyTileInArr(arr) {
-      var _this = this;
+    key: "occupiedTiles",
+    value: function occupiedTiles() {
       var occupiedTiles = [];
       this.entities.forEach(function (entity) {
         occupiedTiles.push(entity.tile.x_y);
       });
+      return occupiedTiles;
+    }
+  }, {
+    key: "emptyTileInArr",
+    value: function emptyTileInArr(arr) {
+      var _this = this;
+      var occupiedTiles = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      if (!occupiedTiles) {
+        occupiedTiles = this.occupiedTiles();
+      }
       var freeTiles = [];
       arr.forEach(function (item) {
         var x = item[0],
@@ -21725,14 +21762,14 @@ var EntityManager = /*#__PURE__*/function () {
     }
   }, {
     key: "emptyTileInRange",
-    value: function emptyTileInRange(x1, y1, x2, y2) {
+    value: function emptyTileInRange(x1, y1, x2, y2, occupiedTiles) {
       var arr = [];
-      var _iterator = _createForOfIteratorHelper(range(x1, x2)),
+      var _iterator = _createForOfIteratorHelper((0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_0__.range)(x1, x2)),
         _step;
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var x = _step.value;
-          var _iterator2 = _createForOfIteratorHelper(range(y1, y2)),
+          var _iterator2 = _createForOfIteratorHelper((0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_0__.range)(y1, y2)),
             _step2;
           try {
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
@@ -21750,12 +21787,110 @@ var EntityManager = /*#__PURE__*/function () {
       } finally {
         _iterator.f();
       }
-      return this.emptyTileInArr(arr);
+      return this.emptyTileInArr(arr, occupiedTiles);
+    }
+  }, {
+    key: "emptyTiles",
+    value: function emptyTiles(count) {
+      var occupiedTiles = this.occupiedTiles();
+      var result = [];
+      for (var x in (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_0__.range)(0, count)) {
+        var freeTile = this.emptyTileInRange(0, 0, 99, 99, occupiedTiles);
+        if (freeTile) {
+          result.push(freeTile);
+          occupiedTiles.push(freeTile.x_y);
+        }
+      }
+      return result;
     }
   }]);
   return EntityManager;
 }();
 var entityManager = new EntityManager();
+
+
+/***/ }),
+
+/***/ "./resources/scripts/helpers/tree.js":
+/*!*******************************************!*\
+  !*** ./resources/scripts/helpers/tree.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Tree": () => (/* binding */ Tree)
+/* harmony export */ });
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/index.mjs");
+/* harmony import */ var _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/helpers/entityManager.js */ "./resources/scripts/helpers/entityManager.js");
+/* harmony import */ var _helpers_entity_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/helpers/entity.js */ "./resources/scripts/helpers/entity.js");
+/* harmony import */ var _helpers_emitter_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/helpers/emitter.js */ "./resources/scripts/helpers/emitter.js");
+/* harmony import */ var _helpers_utils_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/helpers/utils.js */ "./resources/scripts/helpers/utils.js");
+/* harmony import */ var _configs_dustTrailParticles_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/configs/dustTrailParticles.js */ "./resources/scripts/configs/dustTrailParticles.js");
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+
+
+
+var Tree = /*#__PURE__*/function (_Entity) {
+  _inherits(Tree, _Entity);
+  var _super = _createSuper(Tree);
+  function Tree() {
+    var _this;
+    _classCallCheck(this, Tree);
+    _this = _super.call(this);
+    var sprite = pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite.from("static/tree.png");
+    _this.sprite = sprite;
+
+    // this.emitter = new Emitter(this, dustTrailParticlesConfig);
+
+    _this.state = 'idle';
+
+    // this.lastTime = Date.now();
+    return _this;
+  }
+  _createClass(Tree, [{
+    key: "tick",
+    value: function tick() {
+      _get(_getPrototypeOf(Tree.prototype), "tick", this).call(this);
+      // this.emitter.update();
+      // this.updateMove();
+      // if (this.state == 'moving') {
+
+      // }
+    }
+  }, {
+    key: "onChangeState",
+    value: function onChangeState(newState) {
+      switch (newState) {
+        case 'idle':
+          break;
+        case 'moving':
+          break;
+      }
+    }
+  }]);
+  return Tree;
+}(_helpers_entity_js__WEBPACK_IMPORTED_MODULE_2__.Entity);
 
 
 /***/ }),
@@ -21771,6 +21906,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "distanceBetween": () => (/* binding */ distanceBetween),
 /* harmony export */   "pixelsToTile": () => (/* binding */ pixelsToTile),
+/* harmony export */   "range": () => (/* binding */ range),
 /* harmony export */   "tileToPixels": () => (/* binding */ tileToPixels)
 /* harmony export */ });
 /* harmony import */ var _helpers_vector2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/helpers/vector2 */ "./resources/scripts/helpers/vector2.js");
@@ -21786,6 +21922,13 @@ function distanceBetween(x1, y1, x2, y2) {
   var b = y1 - y2;
   var c = Math.sqrt(a * a + b * b);
   return c;
+}
+function range(start, end) {
+  var arr = [];
+  for (var i = start; i <= end; i++) {
+    arr.push(i);
+  }
+  return arr;
 }
 
 
@@ -21898,7 +22041,7 @@ var Wizard = /*#__PURE__*/function (_Entity) {
     value: function tick() {
       _get(_getPrototypeOf(Wizard.prototype), "tick", this).call(this);
       this.emitter.update();
-      this.updateMove();
+      // this.updateMove();
       // if (this.state == 'moving') {
 
       // }
@@ -21934,11 +22077,6 @@ var Wizard = /*#__PURE__*/function (_Entity) {
       var diffY = currentY - targetY;
       var distance = (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_4__.distanceBetween)(currentX, currentY, targetX, targetY);
       console.log('dist', distance);
-
-      // if (distance < 1) {
-      // 	speed = speed / (1 - distance);
-      // }
-
       if (distance < 0.5) {
         console.log('found');
         this.sprite.position.set(this.target.x, this.target.y);
@@ -21949,6 +22087,10 @@ var Wizard = /*#__PURE__*/function (_Entity) {
       }
       var changeX = 0,
         changeY = 0;
+      if (distance < 30) {
+        this.emitter.stop();
+        speed = speed * (distance / 15);
+      }
       if (Math.abs(diffX) > 0) {
         changeX = diffX < 0 ? speed : -1 * speed;
       }
@@ -21961,6 +22103,7 @@ var Wizard = /*#__PURE__*/function (_Entity) {
   }, {
     key: "move",
     value: function move() {
+      var _this3 = this;
       // look around
       var arr = [[this.tile.x - 1, this.tile.y], [this.tile.x + 1, this.tile.y], [this.tile.x, this.tile.y - 1], [this.tile.x, this.tile.y + 1]];
       var emptyTile = _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_1__.entityManager.emptyTileInArr(arr);
@@ -21982,20 +22125,15 @@ var Wizard = /*#__PURE__*/function (_Entity) {
       this.lastTime = Date.now();
       this.state = 'moving';
       this.emitter.start();
-
-      // let tween = new TWEEN.Tween(source).to(destination, 200)
-      // .onStart((target) => {
-      // 	this.state = 'moving';
-      // 	this.emitter.start();
-      // })
-      // .onUpdate((target, elapsed) => {
-      // 	this.sprite.position.set(target.x, target.y);
-      // })
-      // .onComplete((target, tween) => {
-      // 	this.state = 'idle';
-      // 	this.emitter.stop()
-      // })
-      // .start();
+      this.tween = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"].Tween(source).to(destination, 300).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"].Easing.Quadratic.InOut).onStart(function (target) {
+        _this3.state = 'moving';
+        _this3.emitter.start();
+      }).onUpdate(function (target, elapsed) {
+        _this3.sprite.position.set(target.x, target.y);
+      }).onComplete(function (target, tween) {
+        _this3.state = 'idle';
+        _this3.emitter.stop();
+      }).start();
     }
   }]);
   return Wizard;

@@ -16,8 +16,17 @@ function distanceBetween(x1, y1, x2, y2) {
 	return c;
 }
 
+function range(start, end) {
+    var arr = [];
+    for (let i = start; i <= end; i++) {
+        arr.push(i);
+    }
+    return arr;
+}
+
 export {
 	tileToPixels,
 	pixelsToTile,
-	distanceBetween
+	distanceBetween,
+	range
 }

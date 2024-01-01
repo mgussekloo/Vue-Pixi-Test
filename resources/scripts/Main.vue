@@ -11,6 +11,7 @@
 
 	import { entityManager } from '@/helpers/entityManager.js';
 	import { Wizard } from '@/helpers/wizard.js';
+	import { Tree } from '@/helpers/tree.js';
 	import TWEEN from '@tweenjs/tween.js'
 
 	// this.$refs.canvas.addEventListener('mousedown', this.clickCanvas, false);
@@ -68,6 +69,13 @@
 
 	const wizard = new Wizard();
 	entityManager.addEntity(wizard, { x: 0, y: 0});
+
+	let emptyTiles = entityManager.emptyTiles(99);
+
+	for (let tile of emptyTiles) {
+		let tree = new Tree();
+		entityManager.addEntity(tree, tile)
+	}
 
 	app.stage.addChild(viewport);
 

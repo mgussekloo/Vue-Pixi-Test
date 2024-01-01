@@ -36,6 +36,7 @@
     "dependencies": {
         "@tweenjs/tween.js": "^20.0.3",
         "easystarjs": "^0.4.4",
+        "js-event-bus": "^1.1.1",
         "laravel-mix-tailwind": "^0.1.2",
         "mouse-event-offset": "^3.0.2",
         "pixi-viewport": "^5.0.1",

@@ -29,7 +29,7 @@ class Wizard extends Entity {
     tick() {
     	super.tick();
     	this.emitter.update();
-    	this.updateMove();
+    	// this.updateMove();
     	// if (this.state == 'moving') {
 
 		// }
@@ -68,10 +68,6 @@ class Wizard extends Entity {
 		let distance = distanceBetween(currentX, currentY, targetX, targetY);
 		console.log('dist', distance);
 
-		// if (distance < 1) {
-		// 	speed = speed / (1 - distance);
-		// }
-
 		if (distance < 0.5) {
 			console.log('found');
 			this.sprite.position.set(this.target.x, this.target.y);
@@ -83,6 +79,12 @@ class Wizard extends Entity {
 		}
 
 		let changeX = 0, changeY = 0;
+
+		if (distance < 30) {
+			this.emitter.stop()
+
+			speed = speed * (distance / 15);
+		}
 
 		if (Math.abs(diffX) > 0) {
 			changeX = (diffX < 0) ? speed : -1 * speed;
@@ -124,19 +126,20 @@ class Wizard extends Entity {
 		this.state = 'moving';
 		this.emitter.start();
 
-		// let tween = new TWEEN.Tween(source).to(destination, 200)
-		// .onStart((target) => {
-		// 	this.state = 'moving';
-		// 	this.emitter.start();
-		// })
-		// .onUpdate((target, elapsed) => {
-		// 	this.sprite.position.set(target.x, target.y);
-		// })
-		// .onComplete((target, tween) => {
-		// 	this.state = 'idle';
-		// 	this.emitter.stop()
-		// })
-		// .start();
+		this.tween = new TWEEN.Tween(source).to(destination, 300)
+		.easing(TWEEN.Easing.Quadratic.InOut)
+		.onStart((target) => {
+			this.state = 'moving';
+			this.emitter.start();
+		})
+		.onUpdate((target, elapsed) => {
+			this.sprite.position.set(target.x, target.y);
+		})
+		.onComplete((target, tween) => {
+			this.state = 'idle';
+			this.emitter.stop()
+		})
+		.start();
     }
 }
 

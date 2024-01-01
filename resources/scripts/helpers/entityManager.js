@@ -1,13 +1,7 @@
-import { pixelsToTile, tileToPixels } from '@/helpers/utils.js';
+import { pixelsToTile, tileToPixels, range } from '@/helpers/utils.js';
 import { Vector2 } from '@/helpers/vector2';
 
-function range(start, end) {
-    var arr = [];
-    for (let i = start; i <= end; i++) {
-        arr.push(i);
-    }
-    return arr;
-}
+
 
 class EntityManager {
 	entities = [];
@@ -40,6 +34,7 @@ class EntityManager {
 
 	addEntity(entity, position) {
 		this.entities.push(entity);
+		entity.tile = position;
 		entity.entityManager = this;
 	}
 
@@ -63,13 +58,21 @@ class EntityManager {
 		return this.emptyTileInRange(0, 0, 30, 45);
 	}
 
-	emptyTileInArr(arr) {
+	occupiedTiles() {
 		let occupiedTiles = [];
 		this.entities.forEach((entity) => {
 			occupiedTiles.push(entity.tile.x_y);
 		});
+		return occupiedTiles;
+	}
+
+	emptyTileInArr(arr, occupiedTiles=false) {
+		if (!occupiedTiles) {
+			occupiedTiles = this.occupiedTiles();
+		}
 
 		let freeTiles = [];
+
 		arr.forEach((item) => {
 			let x = item[0], y = item[1];
 			let tile = new Vector2(x, y);
@@ -92,14 +95,28 @@ class EntityManager {
 		return false;
 	}
 
-	emptyTileInRange(x1, y1, x2, y2) {
+	emptyTileInRange(x1, y1, x2, y2, occupiedTiles) {
 		let arr = [];
 		for (let x of range(x1, x2)) {
     		for (let y of range(y1, y2)) {
 				arr.push([x, y]);
 			}
 		}
-		return this.emptyTileInArr(arr);
+		return this.emptyTileInArr(arr, occupiedTiles);
+	}
+
+	emptyTiles(count) {
+		let occupiedTiles = this.occupiedTiles();
+
+		let result = [];
+		for (let x in range(0, count)) {
+			let freeTile = this.emptyTileInRange(0, 0, 99, 99, occupiedTiles);
+			if (freeTile) {
+				result.push(freeTile);
+				occupiedTiles.push(freeTile.x_y);
+			}
+		}
+		return result;
 	}
 }
 
