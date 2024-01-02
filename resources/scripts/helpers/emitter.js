@@ -11,8 +11,6 @@ class Emitter {
 	constructor(entity, config) {
 		this.entity = entity;
 		this.config = config;
-		// this.config = particles.upgradeConfig(config, ['assets/particleball.png']);
-		// console.log(this.config);
 	}
 
 	start() {
@@ -29,6 +27,7 @@ class Emitter {
 			let elapsed = Date.now() - this.startTime;
 			this.emitter.update(elapsed * 0.001);
 		}
+		return true;
 	}
 
 	stop() {
@@ -38,10 +37,10 @@ class Emitter {
 	}
 
 	updateOwnerPos() {
-		if (this.entity && this.entity.sprite && this.emitter) {
+		if (this.entity && this.emitter) {
 			this.emitter.updateOwnerPos(
-				this.entity.sprite.position.x + 24,
-				this.entity.sprite.position.y + 55
+				this.entity.position.x + 24,
+				this.entity.position.y + 55
 			);
 		}
 	}

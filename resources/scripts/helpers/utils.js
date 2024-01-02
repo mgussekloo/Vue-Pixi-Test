@@ -24,9 +24,26 @@ function range(start, end) {
     return arr;
 }
 
+function range2d(x1, y1, x2, y2) {
+	let arr = [];
+	for (let x of range(x1, x2)) {
+		for (let y of range(y1, y2)) {
+			arr.push([x, y]);
+		}
+	}
+	return arr;
+}
+
+function randomElements(arr, count) {
+	let shuffled = [...arr].sort(() => 0.5 - Math.random());
+	return shuffled.slice(0, count);
+}
+
 export {
 	tileToPixels,
 	pixelsToTile,
 	distanceBetween,
-	range
+	range,
+	range2d,
+	randomElements
 }

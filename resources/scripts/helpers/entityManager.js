@@ -1,7 +1,5 @@
-import { pixelsToTile, tileToPixels, range } from '@/helpers/utils.js';
+import { pixelsToTile, tileToPixels, range, range2d, randomElements } from '@/helpers/utils.js';
 import { Vector2 } from '@/helpers/vector2';
-
-
 
 class EntityManager {
 	entities = [];
@@ -33,9 +31,11 @@ class EntityManager {
 	}
 
 	addEntity(entity, position) {
-		this.entities.push(entity);
 		entity.tile = position;
 		entity.entityManager = this;
+
+		this.entities.push(entity);
+		this.container.addChild(entity);
 	}
 
 	removeEntity(entity) {
@@ -53,70 +53,42 @@ class EntityManager {
 	freeTile(tile) {
 	}
 
-
-	get emptyTile() {
-		return this.emptyTileInRange(0, 0, 30, 45);
-	}
+	// get emptyTile() {
+	// 	return this.emptyTileInRange(0, 0, 30, 45);
+	// }
 
 	occupiedTiles() {
 		let occupiedTiles = [];
 		this.entities.forEach((entity) => {
-			occupiedTiles.push(entity.tile.x_y);
+			occupiedTiles.push(entity.tile);
 		});
 		return occupiedTiles;
 	}
 
-	emptyTileInArr(arr, occupiedTiles=false) {
-		if (!occupiedTiles) {
-			occupiedTiles = this.occupiedTiles();
+	emptyTiles(count, searchArr=false) {
+		if (!searchArr) {
+			searchArr = range2d(this.tile_min.x, this.tile_min.y, this.tile_max.x, this.tile_max.y);
 		}
 
+		let occupiedTiles = this.occupiedTiles();
+
 		let freeTiles = [];
-
-		arr.forEach((item) => {
-			let x = item[0], y = item[1];
-			let tile = new Vector2(x, y);
-
-			if (
-				!occupiedTiles.includes(tile.x_y)
-				&& x >= this.tile_min.x
-				&& y >= this.tile_min.y
-				&& x <= this.tile_max.x
-				&& y <= this.tile_max.y
+		searchArr.forEach((item) => {
+			let isOccupied = occupiedTiles.some(occ => occ.x == item[0] && occ.y == item[1]);
+			if (item[0] >= this.tile_min.x
+				&& item[0] <= this.tile_max.x
+				&& item[1] >= this.tile_min.y
+				&& item[1] <= this.tile_max.y
 			) {
-				freeTiles.push(tile);
+				if (!isOccupied) {
+					let tile = new Vector2(item[0], item[1]);
+					freeTiles.push(tile)
+				}
 			}
 		});
 
-		if (freeTiles.length) {
-	    	return freeTiles[Math.floor(Math.random()*freeTiles.length)];
-		}
-
-		return false;
-	}
-
-	emptyTileInRange(x1, y1, x2, y2, occupiedTiles) {
-		let arr = [];
-		for (let x of range(x1, x2)) {
-    		for (let y of range(y1, y2)) {
-				arr.push([x, y]);
-			}
-		}
-		return this.emptyTileInArr(arr, occupiedTiles);
-	}
-
-	emptyTiles(count) {
-		let occupiedTiles = this.occupiedTiles();
-
-		let result = [];
-		for (let x in range(0, count)) {
-			let freeTile = this.emptyTileInRange(0, 0, 99, 99, occupiedTiles);
-			if (freeTile) {
-				result.push(freeTile);
-				occupiedTiles.push(freeTile.x_y);
-			}
-		}
-		return result;
+		count = (count <= 0) ? freeTiles.length : count;
+		return randomElements(freeTiles, count);
 	}
 }
 

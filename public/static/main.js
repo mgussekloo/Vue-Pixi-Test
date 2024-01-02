@@ -21273,7 +21273,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       x: 0,
       y: 0
     });
-    var emptyTiles = _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.emptyTiles(99);
+    var emptyTiles = _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.emptyTiles(400);
     var _iterator = _createForOfIteratorHelper(emptyTiles),
       _step;
     try {
@@ -21282,13 +21282,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         var tree = new _helpers_tree_js__WEBPACK_IMPORTED_MODULE_5__.Tree();
         _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.addEntity(tree, tile);
       }
+      // let tree = new Tree();
+      // entityManager.addEntity(tree, {x: 0, y: 0});
+      // tree = new Tree();
+      // entityManager.addEntity(tree, {x: 0, y: 1});
+      // tree = new Tree();
+      // entityManager.addEntity(tree, {x: 0, y: 2});
     } catch (err) {
       _iterator.e(err);
     } finally {
       _iterator.f();
     }
     app.stage.addChild(viewport);
-    app.ticker.add(function () {
+    var currentTime = 0;
+    app.ticker.add(function (time) {
+      // currentTime += time;
+      // console.log(time);
       _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"].update();
       _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.tick();
     });
@@ -21312,6 +21321,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       },
       set emptyTiles(v) {
         emptyTiles = v;
+      },
+      get currentTime() {
+        return currentTime;
+      },
+      set currentTime(v) {
+        currentTime = v;
       },
       get Application() {
         return pixi_js__WEBPACK_IMPORTED_MODULE_0__.Application;
@@ -21511,8 +21526,6 @@ var Emitter = /*#__PURE__*/function () {
     _defineProperty(this, "startTime", null);
     this.entity = entity;
     this.config = config;
-    // this.config = particles.upgradeConfig(config, ['assets/particleball.png']);
-    // console.log(this.config);
   }
   _createClass(Emitter, [{
     key: "start",
@@ -21530,6 +21543,7 @@ var Emitter = /*#__PURE__*/function () {
         var elapsed = Date.now() - this.startTime;
         this.emitter.update(elapsed * 0.001);
       }
+      return true;
     }
   }, {
     key: "stop",
@@ -21541,8 +21555,8 @@ var Emitter = /*#__PURE__*/function () {
   }, {
     key: "updateOwnerPos",
     value: function updateOwnerPos() {
-      if (this.entity && this.entity.sprite && this.emitter) {
-        this.emitter.updateOwnerPos(this.entity.sprite.position.x + 24, this.entity.sprite.position.y + 55);
+      if (this.entity && this.emitter) {
+        this.emitter.updateOwnerPos(this.entity.position.x + 24, this.entity.position.y + 55);
       }
     }
   }]);
@@ -21566,23 +21580,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_uniqueId__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/uniqueId */ "./node_modules/lodash/uniqueId.js");
 /* harmony import */ var lodash_uniqueId__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_uniqueId__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/helpers/utils.js */ "./resources/scripts/helpers/utils.js");
+/* harmony import */ var pixi_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pixi.js */ "./node_modules/pixi.js/lib/index.mjs");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
-var Entity = /*#__PURE__*/function () {
+
+var Entity = /*#__PURE__*/function (_Container) {
+  _inherits(Entity, _Container);
+  var _super = _createSuper(Entity);
   function Entity() {
+    var _this;
     _classCallCheck(this, Entity);
-    _defineProperty(this, "id", -1);
-    _defineProperty(this, "sprite", null);
-    _defineProperty(this, "_entityManager", null);
-    _defineProperty(this, "_state", null);
-    this.id = lodash_uniqueId__WEBPACK_IMPORTED_MODULE_0___default()();
+    _this = _super.call(this);
+    _defineProperty(_assertThisInitialized(_this), "id", -1);
+    _defineProperty(_assertThisInitialized(_this), "sprite", null);
+    _defineProperty(_assertThisInitialized(_this), "_entityManager", null);
+    _defineProperty(_assertThisInitialized(_this), "_state", null);
+    _this.id = lodash_uniqueId__WEBPACK_IMPORTED_MODULE_0___default()();
+    return _this;
   }
 
   // set pixels(pixels) {
@@ -21593,13 +21621,11 @@ var Entity = /*#__PURE__*/function () {
   _createClass(Entity, [{
     key: "tile",
     get: function get() {
-      return (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_1__.pixelsToTile)(this.sprite.position);
+      return (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_1__.pixelsToTile)(this.position);
     },
     set: function set(tile) {
-      if (this.sprite) {
-        var pixels = (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_1__.tileToPixels)(tile);
-        this.sprite.position.set(pixels.x, pixels.y);
-      }
+      var pixels = (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_1__.tileToPixels)(tile);
+      this.position.set(pixels.x, pixels.y);
     }
   }, {
     key: "state",
@@ -21618,19 +21644,23 @@ var Entity = /*#__PURE__*/function () {
     },
     set: function set(entityManager) {
       this._entityManager = entityManager;
-      if (entityManager.container && this.sprite) {
-        entityManager.container.addChild(this.sprite);
-      }
+      // if (entityManager.container && this.sprite) {
+      // 	entityManager.container.addChild(this.sprite);
+      // }
     }
   }, {
     key: "onChangeState",
     value: function onChangeState(newState, oldState) {}
   }, {
     key: "tick",
-    value: function tick() {}
+    value: function tick() {
+      if (this.sprite) {
+        this.sprite.zIndex = this.sprite.position.y;
+      }
+    }
   }]);
   return Entity;
-}();
+}(pixi_js__WEBPACK_IMPORTED_MODULE_2__.Container);
 
 
 /***/ }),
@@ -21649,9 +21679,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers_utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/helpers/utils.js */ "./resources/scripts/helpers/utils.js");
 /* harmony import */ var _helpers_vector2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/helpers/vector2 */ "./resources/scripts/helpers/vector2.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -21704,9 +21731,10 @@ var EntityManager = /*#__PURE__*/function () {
   }, {
     key: "addEntity",
     value: function addEntity(entity, position) {
-      this.entities.push(entity);
       entity.tile = position;
       entity.entityManager = this;
+      this.entities.push(entity);
+      this.container.addChild(entity);
     }
   }, {
     key: "removeEntity",
@@ -21723,84 +21751,42 @@ var EntityManager = /*#__PURE__*/function () {
   }, {
     key: "freeTile",
     value: function freeTile(tile) {}
-  }, {
-    key: "emptyTile",
-    get: function get() {
-      return this.emptyTileInRange(0, 0, 30, 45);
-    }
+
+    // get emptyTile() {
+    // 	return this.emptyTileInRange(0, 0, 30, 45);
+    // }
   }, {
     key: "occupiedTiles",
     value: function occupiedTiles() {
       var occupiedTiles = [];
       this.entities.forEach(function (entity) {
-        occupiedTiles.push(entity.tile.x_y);
+        occupiedTiles.push(entity.tile);
       });
       return occupiedTiles;
     }
   }, {
-    key: "emptyTileInArr",
-    value: function emptyTileInArr(arr) {
-      var _this = this;
-      var occupiedTiles = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      if (!occupiedTiles) {
-        occupiedTiles = this.occupiedTiles();
-      }
-      var freeTiles = [];
-      arr.forEach(function (item) {
-        var x = item[0],
-          y = item[1];
-        var tile = new _helpers_vector2__WEBPACK_IMPORTED_MODULE_1__.Vector2(x, y);
-        if (!occupiedTiles.includes(tile.x_y) && x >= _this.tile_min.x && y >= _this.tile_min.y && x <= _this.tile_max.x && y <= _this.tile_max.y) {
-          freeTiles.push(tile);
-        }
-      });
-      if (freeTiles.length) {
-        return freeTiles[Math.floor(Math.random() * freeTiles.length)];
-      }
-      return false;
-    }
-  }, {
-    key: "emptyTileInRange",
-    value: function emptyTileInRange(x1, y1, x2, y2, occupiedTiles) {
-      var arr = [];
-      var _iterator = _createForOfIteratorHelper((0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_0__.range)(x1, x2)),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var x = _step.value;
-          var _iterator2 = _createForOfIteratorHelper((0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_0__.range)(y1, y2)),
-            _step2;
-          try {
-            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-              var y = _step2.value;
-              arr.push([x, y]);
-            }
-          } catch (err) {
-            _iterator2.e(err);
-          } finally {
-            _iterator2.f();
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-      return this.emptyTileInArr(arr, occupiedTiles);
-    }
-  }, {
     key: "emptyTiles",
     value: function emptyTiles(count) {
-      var occupiedTiles = this.occupiedTiles();
-      var result = [];
-      for (var x in (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_0__.range)(0, count)) {
-        var freeTile = this.emptyTileInRange(0, 0, 99, 99, occupiedTiles);
-        if (freeTile) {
-          result.push(freeTile);
-          occupiedTiles.push(freeTile.x_y);
-        }
+      var _this = this;
+      var searchArr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      if (!searchArr) {
+        searchArr = (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_0__.range2d)(this.tile_min.x, this.tile_min.y, this.tile_max.x, this.tile_max.y);
       }
-      return result;
+      var occupiedTiles = this.occupiedTiles();
+      var freeTiles = [];
+      searchArr.forEach(function (item) {
+        var isOccupied = occupiedTiles.some(function (occ) {
+          return occ.x == item[0] && occ.y == item[1];
+        });
+        if (item[0] >= _this.tile_min.x && item[0] <= _this.tile_max.x && item[1] >= _this.tile_min.y && item[1] <= _this.tile_max.y) {
+          if (!isOccupied) {
+            var tile = new _helpers_vector2__WEBPACK_IMPORTED_MODULE_1__.Vector2(item[0], item[1]);
+            freeTiles.push(tile);
+          }
+        }
+      });
+      count = count <= 0 ? freeTiles.length : count;
+      return (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_0__.randomElements)(freeTiles, count);
     }
   }]);
   return EntityManager;
@@ -21858,8 +21844,8 @@ var Tree = /*#__PURE__*/function (_Entity) {
     _classCallCheck(this, Tree);
     _this = _super.call(this);
     var sprite = pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite.from("static/tree.png");
-    _this.sprite = sprite;
-    _this.sprite.anchor.set(1, 0.5);
+    sprite.anchor.set(0, 0.5);
+    _this.addChild(sprite);
 
     // this.emitter = new Emitter(this, dustTrailParticlesConfig);
 
@@ -21906,10 +21892,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "distanceBetween": () => (/* binding */ distanceBetween),
 /* harmony export */   "pixelsToTile": () => (/* binding */ pixelsToTile),
+/* harmony export */   "randomElements": () => (/* binding */ randomElements),
 /* harmony export */   "range": () => (/* binding */ range),
+/* harmony export */   "range2d": () => (/* binding */ range2d),
 /* harmony export */   "tileToPixels": () => (/* binding */ tileToPixels)
 /* harmony export */ });
 /* harmony import */ var _helpers_vector2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/helpers/vector2 */ "./resources/scripts/helpers/vector2.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 
 function tileToPixels(v) {
   return new _helpers_vector2__WEBPACK_IMPORTED_MODULE_0__.Vector2(v.x * 48, v.y * 48);
@@ -21929,6 +21924,39 @@ function range(start, end) {
     arr.push(i);
   }
   return arr;
+}
+function range2d(x1, y1, x2, y2) {
+  var arr = [];
+  var _iterator = _createForOfIteratorHelper(range(x1, x2)),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var x = _step.value;
+      var _iterator2 = _createForOfIteratorHelper(range(y1, y2)),
+        _step2;
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var y = _step2.value;
+          arr.push([x, y]);
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return arr;
+}
+function randomElements(arr, count) {
+  var shuffled = _toConsumableArray(arr).sort(function () {
+    return 0.5 - Math.random();
+  });
+  return shuffled.slice(0, count);
 }
 
 
@@ -21995,8 +22023,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers_entity_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/helpers/entity.js */ "./resources/scripts/helpers/entity.js");
 /* harmony import */ var _helpers_emitter_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/helpers/emitter.js */ "./resources/scripts/helpers/emitter.js");
 /* harmony import */ var _helpers_utils_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/helpers/utils.js */ "./resources/scripts/helpers/utils.js");
-/* harmony import */ var _configs_dustTrailParticles_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/configs/dustTrailParticles.js */ "./resources/scripts/configs/dustTrailParticles.js");
-/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+/* harmony import */ var _pixi_particle_emitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @pixi/particle-emitter */ "./node_modules/@pixi/particle-emitter/lib/particle-emitter.es.js");
+/* harmony import */ var _configs_dustTrailParticles_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/configs/dustTrailParticles.js */ "./resources/scripts/configs/dustTrailParticles.js");
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -22020,6 +22049,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
 
 
+
 var Wizard = /*#__PURE__*/function (_Entity) {
   _inherits(Wizard, _Entity);
   var _super = _createSuper(Wizard);
@@ -22029,22 +22059,20 @@ var Wizard = /*#__PURE__*/function (_Entity) {
     _this = _super.call(this);
     _defineProperty(_assertThisInitialized(_this), "lastTime", 0);
     _defineProperty(_assertThisInitialized(_this), "target", null);
+    _defineProperty(_assertThisInitialized(_this), "components", []);
     var wizardSprite = pixi_js__WEBPACK_IMPORTED_MODULE_0__.Sprite.from("static/wizard.png");
-    _this.sprite = wizardSprite;
-    _this.emitter = new _helpers_emitter_js__WEBPACK_IMPORTED_MODULE_3__.Emitter(_assertThisInitialized(_this), _configs_dustTrailParticles_js__WEBPACK_IMPORTED_MODULE_5__.dustTrailParticlesConfig);
+    // this.sprite = wizardSprite;
+    _this.addChild(wizardSprite);
     _this.state = 'idle';
-    _this.lastTime = Date.now();
     return _this;
   }
   _createClass(Wizard, [{
     key: "tick",
     value: function tick() {
       _get(_getPrototypeOf(Wizard.prototype), "tick", this).call(this);
-      this.emitter.update();
-      // this.updateMove();
-      // if (this.state == 'moving') {
-
-      // }
+      this.components.forEach(function (child) {
+        return child.update();
+      });
     }
   }, {
     key: "onChangeState",
@@ -22054,51 +22082,11 @@ var Wizard = /*#__PURE__*/function (_Entity) {
         case 'idle':
           setTimeout(function () {
             return _this2.move();
-          }, 1000);
+          }, 100);
           break;
         case 'moving':
           break;
       }
-    }
-  }, {
-    key: "updateMove",
-    value: function updateMove() {
-      if (!this.target) {
-        return;
-      }
-      var delta = Date.now() - this.lastTime;
-      this.lastTime = Date.now();
-      var speed = delta * 0.05;
-      var currentX = this.sprite.position.x;
-      var currentY = this.sprite.position.y;
-      var targetX = this.target.x;
-      var targetY = this.target.y;
-      var diffX = currentX - targetX;
-      var diffY = currentY - targetY;
-      var distance = (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_4__.distanceBetween)(currentX, currentY, targetX, targetY);
-      console.log('dist', distance);
-      if (distance < 0.5) {
-        console.log('found');
-        this.sprite.position.set(this.target.x, this.target.y);
-        this.target = null;
-        this.state = 'idle';
-        this.emitter.stop();
-        return;
-      }
-      var changeX = 0,
-        changeY = 0;
-      if (distance < 30) {
-        this.emitter.stop();
-        speed = speed * (distance / 15);
-      }
-      if (Math.abs(diffX) > 0) {
-        changeX = diffX < 0 ? speed : -1 * speed;
-      }
-      if (Math.abs(diffY) > 0) {
-        changeY = diffY < 0 ? speed : -1 * speed;
-      }
-      console.log(changeX, changeY);
-      this.sprite.position.set(currentX + changeX, currentY + changeY);
     }
   }, {
     key: "move",
@@ -22106,34 +22094,36 @@ var Wizard = /*#__PURE__*/function (_Entity) {
       var _this3 = this;
       // look around
       var arr = [[this.tile.x - 1, this.tile.y], [this.tile.x + 1, this.tile.y], [this.tile.x, this.tile.y - 1], [this.tile.x, this.tile.y + 1]];
-      var emptyTile = _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_1__.entityManager.emptyTileInArr(arr);
-      if (emptyTile === false) {
+      var emptyTile = _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_1__.entityManager.emptyTiles(1, arr).pop();
+      if (!emptyTile) {
         this.state = 'idle';
+        return;
       }
       var emptyPosition = (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_4__.tileToPixels)(emptyTile);
-      var position = this.sprite.position;
-      var source = {
+      var position = this.position;
+      var distance = parseInt(emptyPosition.distanceTo(position));
+      this.state = 'moving';
+      var emitter = new _helpers_emitter_js__WEBPACK_IMPORTED_MODULE_3__.Emitter(this, _configs_dustTrailParticles_js__WEBPACK_IMPORTED_MODULE_6__.dustTrailParticlesConfig);
+      this.components.push(emitter);
+      // this.addChild(emitter);
+
+      var tween = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__["default"].Tween({
         x: position.x,
         y: position.y
-      };
-      var destination = {
+      }).to({
         x: emptyPosition.x,
         y: emptyPosition.y
-      };
-      var distance = parseInt(emptyPosition.distanceTo(position));
-      this.target = destination;
-      this.lastTime = Date.now();
-      this.state = 'moving';
-      this.emitter.start();
-      this.tween = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"].Tween(source).to(destination, 300).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"].Easing.Quadratic.InOut).onStart(function (target) {
+      }, 300).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__["default"].Easing.Quadratic.InOut).onStart(function (object) {
         _this3.state = 'moving';
-        _this3.emitter.start();
-      }).onUpdate(function (target, elapsed) {
-        _this3.sprite.position.set(target.x, target.y);
-      }).onComplete(function (target, tween) {
+        emitter.start();
+      }).onUpdate(function (object) {
+        _this3.position.set(object.x, object.y);
+      }).onComplete(function (object) {
         _this3.state = 'idle';
-        _this3.emitter.stop();
+        emitter.stop();
       }).start();
+
+      // /this.tweens.push(tween);
     }
   }]);
   return Wizard;

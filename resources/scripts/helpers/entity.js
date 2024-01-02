@@ -1,7 +1,8 @@
 import uniqueId from 'lodash/uniqueId';
 import { pixelsToTile, tileToPixels } from '@/helpers/utils.js';
+import { Container, Assets } from 'pixi.js'
 
-class Entity {
+class Entity extends Container {
 	id = -1;
     sprite = null;
 
@@ -9,6 +10,7 @@ class Entity {
     _state = null;
 
     constructor() {
+		super();
     	this.id = uniqueId();
     }
 
@@ -19,14 +21,12 @@ class Entity {
     // }
 
 	set tile(tile) {
-		if (this.sprite) {
-			let pixels = tileToPixels(tile);
-			this.sprite.position.set(pixels.x, pixels.y);
-		}
+		let pixels = tileToPixels(tile);
+		this.position.set(pixels.x, pixels.y);
 	}
 
 	get tile() {
-		return pixelsToTile(this.sprite.position);
+		return pixelsToTile(this.position);
 	}
 
 	set state(state) {
@@ -41,9 +41,9 @@ class Entity {
 
 	set entityManager(entityManager) {
 		this._entityManager = entityManager;
-		if (entityManager.container && this.sprite) {
-			entityManager.container.addChild(this.sprite);
-		}
+		// if (entityManager.container && this.sprite) {
+		// 	entityManager.container.addChild(this.sprite);
+		// }
 	}
 
 	get entityManager() {
@@ -55,7 +55,9 @@ class Entity {
 	}
 
 	tick() {
-
+		if (this.sprite) {
+			this.sprite.zIndex = this.sprite.position.y;
+		}
 	}
 }
 

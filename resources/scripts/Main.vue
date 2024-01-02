@@ -70,16 +70,24 @@
 	const wizard = new Wizard();
 	entityManager.addEntity(wizard, { x: 0, y: 0});
 
-	let emptyTiles = entityManager.emptyTiles(99);
-
+	let emptyTiles = entityManager.emptyTiles(400);
 	for (let tile of emptyTiles) {
 		let tree = new Tree();
 		entityManager.addEntity(tree, tile)
 	}
+	// let tree = new Tree();
+	// entityManager.addEntity(tree, {x: 0, y: 0});
+	// tree = new Tree();
+	// entityManager.addEntity(tree, {x: 0, y: 1});
+	// tree = new Tree();
+	// entityManager.addEntity(tree, {x: 0, y: 2});
 
 	app.stage.addChild(viewport);
 
-	app.ticker.add(() => {
+	let currentTime = 0;
+	app.ticker.add((time) => {
+		// currentTime += time;
+		// console.log(time);
 		TWEEN.update();
 		entityManager.tick();
 	})

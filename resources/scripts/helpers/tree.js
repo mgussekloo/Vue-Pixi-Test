@@ -13,8 +13,8 @@ class Tree extends Entity {
     	super();
 
     	const sprite = Sprite.from("static/tree.png");
- 		this.sprite = sprite;
- 		this.sprite.anchor.set(1, 0.5);
+ 		sprite.anchor.set(0, 0.5);
+ 		this.addChild(sprite);
 
 		// this.emitter = new Emitter(this, dustTrailParticlesConfig);
 
