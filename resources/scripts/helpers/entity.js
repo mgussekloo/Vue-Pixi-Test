@@ -55,9 +55,7 @@ class Entity extends Container {
 	}
 
 	tick() {
-		if (this.sprite) {
-			this.sprite.zIndex = this.sprite.position.y;
-		}
+
 	}
 }
 

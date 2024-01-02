@@ -20,6 +20,7 @@ class EntityManager {
     }
 
     tick() {
+    	this.container.sortChildren();
     	this.entities.forEach((entity) => entity.tick());
     }
 

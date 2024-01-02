@@ -21653,11 +21653,7 @@ var Entity = /*#__PURE__*/function (_Container) {
     value: function onChangeState(newState, oldState) {}
   }, {
     key: "tick",
-    value: function tick() {
-      if (this.sprite) {
-        this.sprite.zIndex = this.sprite.position.y;
-      }
-    }
+    value: function tick() {}
   }]);
   return Entity;
 }(pixi_js__WEBPACK_IMPORTED_MODULE_2__.Container);
@@ -21716,6 +21712,7 @@ var EntityManager = /*#__PURE__*/function () {
   }, {
     key: "tick",
     value: function tick() {
+      this.container.sortChildren();
       this.entities.forEach(function (entity) {
         return entity.tick();
       });
