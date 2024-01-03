@@ -12,7 +12,7 @@
 	import { entityManager } from '@/helpers/entityManager.js';
 	import { Wizard } from '@/helpers/wizard.js';
 	import { Tree } from '@/helpers/tree.js';
-	import TWEEN from '@tweenjs/tween.js'
+	// import TWEEN from '@tweenjs/tween.js'
 
 	// this.$refs.canvas.addEventListener('mousedown', this.clickCanvas, false);
 	// this.$refs.canvas.addEventListener('touchstart', this.clickCanvas, false);
@@ -84,12 +84,10 @@
 
 	app.stage.addChild(viewport);
 
-	let currentTime = 0;
-	app.ticker.add((time) => {
-		// currentTime += time;
-		// console.log(time);
-		TWEEN.update();
-		entityManager.tick();
+	app.ticker.add((delta) => {
+		// if (Math.floor(Math.random() * 40) < 5) {
+			entityManager.update(delta);
+		// }
 	})
 
 	onMounted(() => {

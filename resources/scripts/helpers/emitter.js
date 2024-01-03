@@ -11,21 +11,31 @@ class Emitter {
 	constructor(entity, config) {
 		this.entity = entity;
 		this.config = config;
+		this.container = entity.entityManager.container;
 	}
 
 	start() {
-		this.emitter = new particles.Emitter(this.entity.entityManager.container, this.config);
+		this.emitter = new particles.Emitter(this.container, this.config);
 		this.updateOwnerPos();
 		this.emitter.emit = true;
 		this.startTime = Date.now();
 	}
 
-	update() {
+	update(delta) {
+		// this.container.children.forEach((item) => {
+    	// 	if (item.constructor.name == 'Particle') {
+    	// 		// console.log(item.zIndex);
+    	// 		item.zIndex = 0;
+
+    	// 	}
+    	// });
 		if (this.startTime && this.emitter) {
+			// console.log(this.emitter.particles);
+
 			this.updateOwnerPos()
 
-			let elapsed = Date.now() - this.startTime;
-			this.emitter.update(elapsed * 0.001);
+			// let elapsed = Date.now() - this.startTime;
+			this.emitter.update(delta);
 		}
 		return true;
 	}

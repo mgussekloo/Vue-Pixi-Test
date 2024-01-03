@@ -7,7 +7,8 @@ import * as particles from '@pixi/particle-emitter';
 
 import { dustTrailParticlesConfig } from '@/configs/dustTrailParticles.js';
 
-import TWEEN from '@tweenjs/tween.js'
+// import TWEEN from '@tweenjs/tween.js'
+import { TweenWrap } from '@/helpers/tweenWrap.js';
 
 class Wizard extends Entity {
 	lastTime = 0;
@@ -24,9 +25,10 @@ class Wizard extends Entity {
  		this.state = 'idle';
     }
 
-    tick() {
-    	super.tick();
-    	this.components.forEach((child) => child.update());
+    update(delta) {
+    	super.update(delta);
+    	// console.log(time);
+    	this.components.forEach((child) => child.update(delta));
     }
 
 	onChangeState(newState) {
@@ -66,28 +68,33 @@ class Wizard extends Entity {
 		this.components.push(emitter);
 		// this.addChild(emitter);
 
-		let tween = new TWEEN.Tween({
+		let origin = {
 			x: position.x,
 			y: position.y,
-		}).to({
+		};
+
+		let destination = {
 			x: emptyPosition.x,
 			y: emptyPosition.y
-		}, 300)
-		.easing(TWEEN.Easing.Quadratic.InOut)
-		.onStart((object) => {
+		}
+		let duration = 300;
+
+		let tw = new TweenWrap(origin, destination, duration);
+		tw.tween
+		// .easing(TWEEN.Easing.Quadratic.InOut)
+		.onStart(() => {
 			this.state = 'moving';
 			emitter.start();
 		})
 		.onUpdate((object) => {
 			this.position.set(object.x, object.y);
 		})
-		.onComplete((object) => {
+		.onComplete(() => {
 			this.state = 'idle';
 			emitter.stop();
-		})
-		.start();
+		});
 
-		// /this.tweens.push(tween);
+		this.components.push(tw);
     }
 }
 

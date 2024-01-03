@@ -3903,6 +3903,11 @@ jiti@^1.18.2:
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.18.2.tgz#80c3ef3d486ebf2450d9335122b32d121f2a83cd"
   integrity sha512-QAdOptna2NYiSSpv0O/BwoHBSmz4YhpzJHyi+fnMRTXFjp7B8i/YG5Z8IfusxB1ufjcD2Sre1F3R+nX3fvy7gg==
 
+js-easing-functions@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/js-easing-functions/-/js-easing-functions-1.0.3.tgz#01bcf4d4779994a55e3d7790ba755ef7872ba629"
+  integrity sha512-skDTLPuwWvAVYQVPwmjcFuCv8i8jtVD4L4FELxICwbS1HWFhs+627vOdDhQUGJMe9os6QO2XgEI4qb5umiUQFg==
+
 js-event-bus@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/js-event-bus/-/js-event-bus-1.1.1.tgz#7a7a92e2bb4a0bb8cfdbe3853904146e8819d788"

@@ -54,7 +54,7 @@ class Entity extends Container {
 
 	}
 
-	tick() {
+	update(delta) {
 
 	}
 }

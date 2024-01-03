@@ -19,9 +19,10 @@ class EntityManager {
     	// }
     }
 
-    tick() {
+    update(delta) {
     	this.container.sortChildren();
-    	this.entities.forEach((entity) => entity.tick());
+		// console.log(this.container.children);
+    	this.entities.forEach((entity) => entity.update(delta));
     }
 
 	getEntitiesAtTile(tile) {
@@ -45,13 +46,6 @@ class EntityManager {
 		// }
 
 		// this.occupied_cells[] = [];
-	}
-
-	blockTile(tile) {
-
-	}
-
-	freeTile(tile) {
 	}
 
 	// get emptyTile() {

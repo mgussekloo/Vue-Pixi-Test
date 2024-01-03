@@ -24,8 +24,8 @@ class Tree extends Entity {
 
     }
 
-    tick() {
-    	super.tick();
+    update(delta) {
+    	super.update(delta);
     	// this.emitter.update();
     	// this.updateMove();
     	// if (this.state == 'moving') {

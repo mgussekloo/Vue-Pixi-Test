@@ -21207,7 +21207,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/helpers/entityManager.js */ "./resources/scripts/helpers/entityManager.js");
 /* harmony import */ var _helpers_wizard_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/helpers/wizard.js */ "./resources/scripts/helpers/wizard.js");
 /* harmony import */ var _helpers_tree_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/helpers/tree.js */ "./resources/scripts/helpers/tree.js");
-/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
@@ -21217,7 +21216,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
-
+// import TWEEN from '@tweenjs/tween.js'
 
 // this.$refs.canvas.addEventListener('mousedown', this.clickCanvas, false);
 // this.$refs.canvas.addEventListener('touchstart', this.clickCanvas, false);
@@ -21294,13 +21293,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       _iterator.f();
     }
     app.stage.addChild(viewport);
-    var currentTime = 0;
-    app.ticker.add(function (time) {
-      // currentTime += time;
-      // console.log(time);
-      _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"].update();
-      _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.tick();
+    app.ticker.add(function (delta) {
+      // if (Math.floor(Math.random() * 40) < 5) {
+      _helpers_entityManager_js__WEBPACK_IMPORTED_MODULE_3__.entityManager.update(delta);
+      // }
     });
+
     (0,vue__WEBPACK_IMPORTED_MODULE_2__.onMounted)(function () {
       document.getElementById('canvas').appendChild(app.view);
     });
@@ -21321,12 +21319,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       },
       set emptyTiles(v) {
         emptyTiles = v;
-      },
-      get currentTime() {
-        return currentTime;
-      },
-      set currentTime(v) {
-        currentTime = v;
       },
       get Application() {
         return pixi_js__WEBPACK_IMPORTED_MODULE_0__.Application;
@@ -21352,9 +21344,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       },
       get Tree() {
         return _helpers_tree_js__WEBPACK_IMPORTED_MODULE_5__.Tree;
-      },
-      get TWEEN() {
-        return _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_6__["default"];
       }
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
@@ -21411,7 +21400,7 @@ var dustTrailParticlesConfig = {
   "frequency": 0.3,
   "emitterLifetime": -1,
   "maxParticles": 25,
-  "addAtBack": false,
+  "addAtBack": true,
   "pos": {
     "x": 0,
     "y": 0
@@ -21526,22 +21515,33 @@ var Emitter = /*#__PURE__*/function () {
     _defineProperty(this, "startTime", null);
     this.entity = entity;
     this.config = config;
+    this.container = entity.entityManager.container;
   }
   _createClass(Emitter, [{
     key: "start",
     value: function start() {
-      this.emitter = new _pixi_particle_emitter__WEBPACK_IMPORTED_MODULE_0__.Emitter(this.entity.entityManager.container, this.config);
+      this.emitter = new _pixi_particle_emitter__WEBPACK_IMPORTED_MODULE_0__.Emitter(this.container, this.config);
       this.updateOwnerPos();
       this.emitter.emit = true;
       this.startTime = Date.now();
     }
   }, {
     key: "update",
-    value: function update() {
+    value: function update(delta) {
+      // this.container.children.forEach((item) => {
+      // 	if (item.constructor.name == 'Particle') {
+      // 		// console.log(item.zIndex);
+      // 		item.zIndex = 0;
+
+      // 	}
+      // });
       if (this.startTime && this.emitter) {
+        // console.log(this.emitter.particles);
+
         this.updateOwnerPos();
-        var elapsed = Date.now() - this.startTime;
-        this.emitter.update(elapsed * 0.001);
+
+        // let elapsed = Date.now() - this.startTime;
+        this.emitter.update(delta);
       }
       return true;
     }
@@ -21652,8 +21652,8 @@ var Entity = /*#__PURE__*/function (_Container) {
     key: "onChangeState",
     value: function onChangeState(newState, oldState) {}
   }, {
-    key: "tick",
-    value: function tick() {}
+    key: "update",
+    value: function update(delta) {}
   }]);
   return Entity;
 }(pixi_js__WEBPACK_IMPORTED_MODULE_2__.Container);
@@ -21710,11 +21710,12 @@ var EntityManager = /*#__PURE__*/function () {
       // }
     }
   }, {
-    key: "tick",
-    value: function tick() {
+    key: "update",
+    value: function update(delta) {
       this.container.sortChildren();
+      // console.log(this.container.children);
       this.entities.forEach(function (entity) {
-        return entity.tick();
+        return entity.update(delta);
       });
     }
   }, {
@@ -21742,12 +21743,6 @@ var EntityManager = /*#__PURE__*/function () {
 
       // this.occupied_cells[] = [];
     }
-  }, {
-    key: "blockTile",
-    value: function blockTile(tile) {}
-  }, {
-    key: "freeTile",
-    value: function freeTile(tile) {}
 
     // get emptyTile() {
     // 	return this.emptyTileInRange(0, 0, 30, 45);
@@ -21852,9 +21847,9 @@ var Tree = /*#__PURE__*/function (_Entity) {
     return _this;
   }
   _createClass(Tree, [{
-    key: "tick",
-    value: function tick() {
-      _get(_getPrototypeOf(Tree.prototype), "tick", this).call(this);
+    key: "update",
+    value: function update(delta) {
+      _get(_getPrototypeOf(Tree.prototype), "update", this).call(this, delta);
       // this.emitter.update();
       // this.updateMove();
       // if (this.state == 'moving') {
@@ -21874,6 +21869,52 @@ var Tree = /*#__PURE__*/function (_Entity) {
   }]);
   return Tree;
 }(_helpers_entity_js__WEBPACK_IMPORTED_MODULE_2__.Entity);
+
+
+/***/ }),
+
+/***/ "./resources/scripts/helpers/tweenWrap.js":
+/*!************************************************!*\
+  !*** ./resources/scripts/helpers/tweenWrap.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TweenWrap": () => (/* binding */ TweenWrap)
+/* harmony export */ });
+/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+var TweenWrap = /*#__PURE__*/function () {
+  function TweenWrap(origin, destination, duration) {
+    _classCallCheck(this, TweenWrap);
+    _defineProperty(this, "elapsed", 0);
+    _defineProperty(this, "duration", 0);
+    _defineProperty(this, "tween", null);
+    this.duration = duration;
+    this.tween = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["default"].Tween(origin).to(destination, duration).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__["default"].Easing.Quadratic.InOut);
+  }
+  _createClass(TweenWrap, [{
+    key: "update",
+    value: function update(delta) {
+      this.elapsed = this.elapsed + delta * 10;
+      this.tween.update(this.elapsed);
+      if (this.elapsed >= this.duration) {
+        return false;
+      }
+      return true;
+    }
+  }]);
+  return TweenWrap;
+}();
 
 
 /***/ }),
@@ -22022,7 +22063,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers_utils_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/helpers/utils.js */ "./resources/scripts/helpers/utils.js");
 /* harmony import */ var _pixi_particle_emitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @pixi/particle-emitter */ "./node_modules/@pixi/particle-emitter/lib/particle-emitter.es.js");
 /* harmony import */ var _configs_dustTrailParticles_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/configs/dustTrailParticles.js */ "./resources/scripts/configs/dustTrailParticles.js");
-/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @tweenjs/tween.js */ "./node_modules/@tweenjs/tween.js/dist/tween.esm.js");
+/* harmony import */ var _helpers_tweenWrap_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/helpers/tweenWrap.js */ "./resources/scripts/helpers/tweenWrap.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -22047,6 +22088,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
 
 
+// import TWEEN from '@tweenjs/tween.js'
+
 var Wizard = /*#__PURE__*/function (_Entity) {
   _inherits(Wizard, _Entity);
   var _super = _createSuper(Wizard);
@@ -22064,11 +22107,12 @@ var Wizard = /*#__PURE__*/function (_Entity) {
     return _this;
   }
   _createClass(Wizard, [{
-    key: "tick",
-    value: function tick() {
-      _get(_getPrototypeOf(Wizard.prototype), "tick", this).call(this);
+    key: "update",
+    value: function update(delta) {
+      _get(_getPrototypeOf(Wizard.prototype), "update", this).call(this, delta);
+      // console.log(time);
       this.components.forEach(function (child) {
-        return child.update();
+        return child.update(delta);
       });
     }
   }, {
@@ -22104,23 +22148,28 @@ var Wizard = /*#__PURE__*/function (_Entity) {
       this.components.push(emitter);
       // this.addChild(emitter);
 
-      var tween = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__["default"].Tween({
+      var origin = {
         x: position.x,
         y: position.y
-      }).to({
+      };
+      var destination = {
         x: emptyPosition.x,
         y: emptyPosition.y
-      }, 300).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_7__["default"].Easing.Quadratic.InOut).onStart(function (object) {
+      };
+      var duration = 300;
+      var tw = new _helpers_tweenWrap_js__WEBPACK_IMPORTED_MODULE_7__.TweenWrap(origin, destination, duration);
+      tw.tween
+      // .easing(TWEEN.Easing.Quadratic.InOut)
+      .onStart(function () {
         _this3.state = 'moving';
         emitter.start();
       }).onUpdate(function (object) {
         _this3.position.set(object.x, object.y);
-      }).onComplete(function (object) {
+      }).onComplete(function () {
         _this3.state = 'idle';
         emitter.stop();
-      }).start();
-
-      // /this.tweens.push(tween);
+      });
+      this.components.push(tw);
     }
   }]);
   return Wizard;
