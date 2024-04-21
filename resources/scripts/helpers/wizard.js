@@ -27,13 +27,13 @@ class Wizard extends Entity {
 
     update(delta) {
     	super.update(delta);
-    	// console.log(time);
-    	this.components.forEach((child) => child.update(delta));
+    	this.components = this.components.filter(child => child.update(delta));
     }
 
 	onChangeState(newState) {
 		switch (newState) {
 			case 'idle':
+				console.log('idling');
 				setTimeout(() => this.move(), 100);
 				break;
 
@@ -60,12 +60,12 @@ class Wizard extends Entity {
 
 		let emptyPosition = tileToPixels(emptyTile);
 		let position = this.position;
-		let distance = parseInt(emptyPosition.distanceTo(position));
+		let distance = emptyPosition.distanceTo(position);
 
 		this.state = 'moving';
 
-		let emitter = new Emitter(this, dustTrailParticlesConfig);
-		this.components.push(emitter);
+		// let emitter = new Emitter(this, dustTrailParticlesConfig);
+		// this.components.push(emitter);
 		// this.addChild(emitter);
 
 		let origin = {
@@ -84,14 +84,14 @@ class Wizard extends Entity {
 		// .easing(TWEEN.Easing.Quadratic.InOut)
 		.onStart(() => {
 			this.state = 'moving';
-			emitter.start();
+			// emitter.start();
 		})
 		.onUpdate((object) => {
 			this.position.set(object.x, object.y);
 		})
 		.onComplete(() => {
 			this.state = 'idle';
-			emitter.stop();
+			// emitter.stop();
 		});
 
 		this.components.push(tw);

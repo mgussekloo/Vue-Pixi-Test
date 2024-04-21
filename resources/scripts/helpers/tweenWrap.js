@@ -13,12 +13,7 @@ class TweenWrap {
 	update(delta) {
 		this.elapsed = this.elapsed + delta * 10;
 		this.tween.update(this.elapsed);
-
-		if (this.elapsed >= this.duration) {
-			return false;
-		}
-
-		return true;
+		return this.tween.isPlaying();
 	}
 
 }

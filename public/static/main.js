@@ -21528,16 +21528,7 @@ var Emitter = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update(delta) {
-      // this.container.children.forEach((item) => {
-      // 	if (item.constructor.name == 'Particle') {
-      // 		// console.log(item.zIndex);
-      // 		item.zIndex = 0;
-
-      // 	}
-      // });
       if (this.startTime && this.emitter) {
-        // console.log(this.emitter.particles);
-
         this.updateOwnerPos();
 
         // let elapsed = Date.now() - this.startTime;
@@ -21907,10 +21898,7 @@ var TweenWrap = /*#__PURE__*/function () {
     value: function update(delta) {
       this.elapsed = this.elapsed + delta * 10;
       this.tween.update(this.elapsed);
-      if (this.elapsed >= this.duration) {
-        return false;
-      }
-      return true;
+      return this.tween.isPlaying();
     }
   }]);
   return TweenWrap;
@@ -22110,8 +22098,7 @@ var Wizard = /*#__PURE__*/function (_Entity) {
     key: "update",
     value: function update(delta) {
       _get(_getPrototypeOf(Wizard.prototype), "update", this).call(this, delta);
-      // console.log(time);
-      this.components.forEach(function (child) {
+      this.components = this.components.filter(function (child) {
         return child.update(delta);
       });
     }
@@ -22121,6 +22108,7 @@ var Wizard = /*#__PURE__*/function (_Entity) {
       var _this2 = this;
       switch (newState) {
         case 'idle':
+          console.log('idling');
           setTimeout(function () {
             return _this2.move();
           }, 100);
@@ -22142,10 +22130,11 @@ var Wizard = /*#__PURE__*/function (_Entity) {
       }
       var emptyPosition = (0,_helpers_utils_js__WEBPACK_IMPORTED_MODULE_4__.tileToPixels)(emptyTile);
       var position = this.position;
-      var distance = parseInt(emptyPosition.distanceTo(position));
+      var distance = emptyPosition.distanceTo(position);
       this.state = 'moving';
-      var emitter = new _helpers_emitter_js__WEBPACK_IMPORTED_MODULE_3__.Emitter(this, _configs_dustTrailParticles_js__WEBPACK_IMPORTED_MODULE_6__.dustTrailParticlesConfig);
-      this.components.push(emitter);
+
+      // let emitter = new Emitter(this, dustTrailParticlesConfig);
+      // this.components.push(emitter);
       // this.addChild(emitter);
 
       var origin = {
@@ -22162,13 +22151,14 @@ var Wizard = /*#__PURE__*/function (_Entity) {
       // .easing(TWEEN.Easing.Quadratic.InOut)
       .onStart(function () {
         _this3.state = 'moving';
-        emitter.start();
+        // emitter.start();
       }).onUpdate(function (object) {
         _this3.position.set(object.x, object.y);
       }).onComplete(function () {
         _this3.state = 'idle';
-        emitter.stop();
+        // emitter.stop();
       });
+
       this.components.push(tw);
     }
   }]);

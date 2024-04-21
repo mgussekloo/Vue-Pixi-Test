@@ -22,16 +22,7 @@ class Emitter {
 	}
 
 	update(delta) {
-		// this.container.children.forEach((item) => {
-    	// 	if (item.constructor.name == 'Particle') {
-    	// 		// console.log(item.zIndex);
-    	// 		item.zIndex = 0;
-
-    	// 	}
-    	// });
 		if (this.startTime && this.emitter) {
-			// console.log(this.emitter.particles);
-
 			this.updateOwnerPos()
 
 			// let elapsed = Date.now() - this.startTime;
